@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" type="x-icon" href="Images/Main_logo_img-removebg-preview.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftMessenger</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: #fff;
+        }
+
+        .logo {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .circle {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .circle svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .circle svg circle {
+            fill: none;
+            stroke-width: 10;
+        }
+
+        .circle .bg {
+            stroke: rgba(255, 255, 255, 0.2);
+        }
+
+        .circle .progress {
+            stroke: #00c6ff;
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        .circle .label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        .circle .label span {
+            display: block;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <img class="background-image" src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Background Image">
+    <div class="logo">
+        <!-- Replace with your company logo -->
+        <img src="Images/Main_logo_img-removebg-preview.png" alt="Company Logo" width="150%">
+    </div>
+    <div class="container">
+        <h1>SwiftMessenger</h1>
+        <p>We are excited to announce that SwiftMessenger will be launching soon. Stay tuned for the latest updates and get ready for a revolutionary messaging experience.</p>
+        <div class="countdown">
+            <div class="circle">
+                <svg viewBox="0 0 100 100">
+                    <circle class="bg" cx="50" cy="50" r="45"></circle>
+                    <circle class="progress" cx="50" cy="50" r="45"></circle>
+                </svg>
+                <div class="label">
+                    <span id="days">0</span>
+                    Days
+                </div>
+            </div>
+            <div class="circle">
+                <svg viewBox="0 0 100 100">
+                    <circle class="bg" cx="50" cy="50" r="45"></circle>
+                    <circle class="progress" cx="50" cy="50" r="45"></circle>
+                </svg>
+                <div class="label">
+                    <span id="hours">0</span>
+                    Hours
+                </div>
+            </div>
+            <div class="circle">
+                <svg viewBox="0 0 100 100">
+                    <circle class="bg" cx="50" cy="50" r="45"></circle>
+                    <circle class="progress" cx="50" cy="50" r="45"></circle>
+                </svg>
+                <div class="label">
+                    <span id="minutes">0</span>
+                    Minutes
+                </div>
+            </div>
+            <div class="circle">
+                <svg viewBox="0 0 100 100">
+                    <circle class="bg" cx="50" cy="50" r="45"></circle>
+                    <circle class="progress" cx="50" cy="50" r="45"></circle>
+                </svg>
+                <div class="label">
+                    <span id="seconds">0</span>
+                    Seconds
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Set the date we're counting down to
+        let countdownDate = localStorage.getItem('countdownDate');
+
+        if (!countdownDate) {
+            const now = new Date();
+            countdownDate = new Date(now.getTime() + 40 * 24 * 60 * 60 * 1000); // 40 days from now
+            localStorage.setItem('countdownDate', countdownDate);
+        } else {
+            countdownDate = new Date(countdownDate);
+        }
+
+        function updateProgress(circle, percentage) {
+            const radius = circle.r.baseVal.value;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (percentage / 100) * circumference;
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            circle.style.strokeDashoffset = offset;
+        }
+
+        // Update the count down every 1 second
+        let countdownInterval = setInterval(function () {
+            // Get today's date and time
+            let now = new Date().getTime();
+
+            // Find the distance between now and the countdown date
+            let distance = countdownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Calculate percentages
+            let daysProgress = ((40 - days) / 40) * 100;
+            let hoursProgress = ((24 - hours) / 24) * 100;
+            let minutesProgress = ((60 - minutes) / 60) * 100;
+            let secondsProgress = ((60 - seconds) / 60) * 100;
+
+            // Update the circles
+            updateProgress(document.querySelector('.circle:nth-child(1) .progress'), daysProgress);
+            updateProgress(document.querySelector('.circle:nth-child(2) .progress'), hoursProgress);
+            updateProgress(document.querySelector('.circle:nth-child(3) .progress'), minutesProgress);
+            updateProgress(document.querySelector('.circle:nth-child(4) .progress'), secondsProgress);
+
+            // Output the result in an element with id="countdown"
+            document.getElementById("days").innerText = days;
+            document.getElementById("hours").innerText = hours;
+            document.getElementById("minutes").innerText = minutes;
+            document.getElementById("seconds").innerText = seconds;
+
+            // If the countdown is over, write some text 
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("countdown").innerHTML = "EXPIRED";
+                localStorage.removeItem('countdownDate');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
